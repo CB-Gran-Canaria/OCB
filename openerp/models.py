@@ -70,6 +70,7 @@ from .tools.func import frame_codeinfo
 from .tools.misc import CountingStream, DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT, pickle
 from .tools.safe_eval import safe_eval as eval
 from .tools.translate import _
+from .modules.registry import MAP_CLASS_COMPATIBILITY
 
 _logger = logging.getLogger(__name__)
 _schema = logging.getLogger(__name__ + '.schema')
@@ -586,6 +587,9 @@ class BaseModel(object):
 
         # determine inherited models
         parents = getattr(cls, '_inherit', [])
+        if isinstance(parents, str) and parents in MAP_CLASS_COMPATIBILITY:
+            parents = MAP_CLASS_COMPATIBILITY[parents]
+
         parents = [parents] if isinstance(parents, basestring) else (parents or [])
 
         # determine the model's name
